@@ -7,98 +7,122 @@
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            max-width: 900px;
+            max-width: min(800px, 95%);
             margin: 0 auto;
-            padding: 30px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
-            line-height: 1.6;
+            padding: clamp(8px, 2vw, 15px);
+            background: #1E1E1E;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            color: #A9B7C6;
         }
         .container {
-            background-color: white;
-            padding: 40px;
+            background-color: #2B2B2B;
+            padding: clamp(8px, 2vw, 12px);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #323232;
         }
         .container:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 40px rgba(103,140,177,0.1);
         }
         h1 {
-            color: #2d3748;
-            margin-bottom: 30px;
+            color: #8be9fd;
+            margin-bottom: 15px;
             font-size: 2.5em;
             text-align: center;
+            text-shadow: 0 0 10px rgba(139,233,253,0.3);
         }
         .section {
-            margin-bottom: 30px;
-            padding: 25px;
-            border: 1px solid #e2e8f0;
+            margin-bottom: clamp(8px, 2vw, 12px);
+            padding: clamp(8px, 2vw, 12px);
+            border: 1px solid #3D3D3D;
             border-radius: 12px;
             transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #323232;
         }
         .section:hover {
-            border-color: #4CAF50;
-            box-shadow: 0 4px 12px rgba(76,175,80,0.1);
+            border-color: #6897BB;
+            box-shadow: 0 4px 12px rgba(103,140,177,0.1);
         }
         h2 {
-            color: #4a5568;
-            margin-bottom: 20px;
+            color: #CC7832;
+            margin-bottom: 10px;
             font-size: 1.5em;
         }
         textarea {
             width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            border: 2px solid #e2e8f0;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #3D3D3D;
             border-radius: 8px;
             resize: vertical;
-            font-size: 16px;
+            font-size: clamp(14px, 2vw, 16px);
             transition: all 0.2s ease;
-            min-height: 100px;
+            min-height: 60px;
+            max-height: 120px;
+            box-sizing: border-box;
+            background-color: #1E1E1E;
+            color: #A9B7C6;
+            font-family: 'Consolas', 'Monaco', monospace;
         }
         textarea:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+            border-color: #6897BB;
+            box-shadow: 0 0 10px rgba(103,140,177,0.2);
         }
         button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
+            background-color: #1E1E1E;
+            color: #6897BB;
+            padding: 8px 16px;
+            border: 2px solid #6897BB;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             transition: all 0.2s ease;
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
+            display: inline-block;
+            width: auto;
+            min-width: 120px;
+            margin: 10px 12px;
+            text-shadow: 0 0 5px rgba(103,140,177,0.3);
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #6897BB;
+            color: #1E1E1E;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(76,175,80,0.2);
+            box-shadow: 0 0 15px rgba(103,140,177,0.3);
         }
         button:active {
             transform: translateY(0);
         }
         .result {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
+            margin-top: 8px;
+            padding: 12px;
+            background-color: #1E1E1E;
             border-radius: 8px;
             word-break: break-all;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #3D3D3D;
             transition: all 0.2s ease;
             min-height: 60px;
+            max-height: 120px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            width: 100%;
+            color: #A9B7C6;
+            font-family: 'Consolas', 'Monaco', monospace;
         }
         .result:not(:empty) {
-            border-color: #4CAF50;
-            background-color: #f0fff1;
-        }
+            border-color: #bd93f9;
+            background-color: #44475a;
+            box-shadow: 0 0 10px rgba(189,147,249,0.1);
         }
         }
     </style>
@@ -110,8 +134,10 @@
         <div class="section">
             <h2>Encode Secret</h2>
             <textarea id="secret" rows="4" placeholder="Enter your secret text here"></textarea>
-            <textarea id="baseChar" rows="2" placeholder="Enter base text (default: Hello)" style="width: 100%; padding: 10px; margin: 10px 0;"></textarea>
-            <button onclick="encodeSecret()">Encode</button>
+            <textarea id="baseChar" rows="2" placeholder="Enter base text (default: Hello)"></textarea>
+            <div>
+                <button onclick="encodeSecret()">Encode</button>
+            </div>
             <div id="encodeResult" class="result"></div>
         </div>
 
@@ -146,12 +172,13 @@
                 if (data.error) {
                     document.getElementById('encodeResult').textContent = `Error: ${data.error}`;
                 } else {
-                    document.getElementById('encodeResult').textContent = `Encoded: ${data.encoded}`;
+                    document.getElementById('encodeResult').textContent = data.encoded;
                 }
             } catch (error) {
                 document.getElementById('encodeResult').textContent = `Error: ${error.message}`;
             }
         }
+
 
         async function decodeMessage() {
             const encoded = document.getElementById('encoded').value;
@@ -173,7 +200,7 @@
                 if (data.error) {
                     document.getElementById('decodeResult').textContent = `Error: ${data.error}`;
                 } else {
-                    document.getElementById('decodeResult').textContent = `Decoded: ${data.decoded}`;
+                    document.getElementById('decodeResult').textContent = data.decoded;
                 }
             } catch (error) {
                 document.getElementById('decodeResult').textContent = `Error: ${error.message}`;
