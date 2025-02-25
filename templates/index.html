@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Unicode Encoder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+        h1 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .section:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 12px rgba(76,175,80,0.1);
+        }
+        h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            min-height: 100px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76,175,80,0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            word-break: break-all;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease;
+            min-height: 60px;
+        }
+        .result:not(:empty) {
+            border-color: #4CAF50;
+            background-color: #f0fff1;
+        }
+        }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secret Unicode Encoder</h1>
+        
+        <div class="section">
+            <h2>Encode Secret</h2>
+            <textarea id="secret" rows="4" placeholder="Enter your secret text here"></textarea>
+            <textarea id="baseChar" rows="2" placeholder="Enter base text (default: Hello)" style="width: 100%; padding: 10px; margin: 10px 0;"></textarea>
+            <button onclick="encodeSecret()">Encode</button>
+            <div id="encodeResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h2>Decode Message</h2>
+            <textarea id="encoded" rows="4" placeholder="Enter encoded Unicode text here"></textarea>
+            <button onclick="decodeMessage()">Decode</button>
+            <div id="decodeResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function encodeSecret() {
+            const secret = document.getElementById('secret').value;
+            const baseChar = document.getElementById('baseChar').value || 'Hello';
+            
+            if (!secret) {
+                alert('Please enter a secret to encode');
+                return;
+            }
+
+            try {
+                const response = await fetch('/encode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ secret, base_char: baseChar })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('encodeResult').textContent = `Error: ${data.error}`;
+                } else {
+                    document.getElementById('encodeResult').textContent = `Encoded: ${data.encoded}`;
+                }
+            } catch (error) {
+                document.getElementById('encodeResult').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function decodeMessage() {
+            const encoded = document.getElementById('encoded').value;
+            if (!encoded) {
+                alert('Please enter encoded text to decode');
+                return;
+            }
+
+            try {
+                const response = await fetch('/decode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ encoded })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('decodeResult').textContent = `Error: ${data.error}`;
+                } else {
+                    document.getElementById('decodeResult').textContent = `Decoded: ${data.decoded}`;
+                }
+            } catch (error) {
+                document.getElementById('decodeResult').textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
